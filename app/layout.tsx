@@ -16,8 +16,24 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Lydia’s Luxe Fashion",
-  description: "Clothes, shoes, bags, and jewelry for elegant women.",
+  title: "Lydia’s Luxe Fashion | Elegant Women’s Boutique",
+  description:
+    "Shop elegant clothes, shoes, bags, and jewelry from Lydia’s Luxe Fashion.",
+  keywords: [
+    "Lydia’s Luxe Fashion",
+    "women fashion",
+    "boutique fashion",
+    "clothes",
+    "shoes",
+    "bags",
+    "jewelry",
+  ],
+  openGraph: {
+    title: "Lydia’s Luxe Fashion",
+    description:
+      "Elegant women’s boutique for clothes, shoes, bags, and jewelry.",
+    images: ["/images/banner.jpg"],
+  },
 };
 
 export default function RootLayout({
@@ -34,9 +50,7 @@ export default function RootLayout({
         <CartProvider>
           <Navbar />
 
-          <main className="flex-1">
-            {children}
-          </main>
+          <main className="flex-1">{children}</main>
 
           <Footer />
         </CartProvider>
