@@ -9,7 +9,7 @@ import {
 } from "react";
 
 type Product = {
-    id: number;
+    id: string | number;
     name: string;
     price: number;
     image: string;
@@ -18,6 +18,7 @@ type Product = {
     colors?: string[];
     selectedSize?: string;
     selectedColor?: string;
+    variantId?: string;
 };
 
 type CartItem = Product & {
@@ -28,17 +29,17 @@ type CartContextType = {
     cart: CartItem[];
     addToCart: (product: Product) => void;
     removeFromCart: (
-        id: number,
+        id: string | number,
         selectedSize?: string,
         selectedColor?: string
     ) => void;
     increaseQuantity: (
-        id: number,
+        id: string | number,
         selectedSize?: string,
         selectedColor?: string
     ) => void;
     decreaseQuantity: (
-        id: number,
+        id: string | number,
         selectedSize?: string,
         selectedColor?: string
     ) => void;
@@ -75,14 +76,16 @@ export function CartProvider({ children }: { children: ReactNode }) {
                 (item) =>
                     item.id === product.id &&
                     item.selectedSize === product.selectedSize &&
-                    item.selectedColor === product.selectedColor
+                    item.selectedColor === product.selectedColor &&
+                    item.variantId === product.variantId
             );
 
             if (existingItem) {
                 return currentCart.map((item) =>
                     item.id === product.id &&
                         item.selectedSize === product.selectedSize &&
-                        item.selectedColor === product.selectedColor
+                        item.selectedColor === product.selectedColor &&
+                        item.variantId === product.variantId
                         ? { ...item, quantity: item.quantity + 1 }
                         : item
                 );
@@ -93,7 +96,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     };
 
     const removeFromCart = (
-        id: number,
+        id: string | number,
         selectedSize?: string,
         selectedColor?: string
     ) => {
@@ -110,7 +113,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     };
 
     const increaseQuantity = (
-        id: number,
+        id: string | number,
         selectedSize?: string,
         selectedColor?: string
     ) => {
@@ -126,7 +129,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     };
 
     const decreaseQuantity = (
-        id: number,
+        id: string | number,
         selectedSize?: string,
         selectedColor?: string
     ) => {
