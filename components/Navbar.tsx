@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { Search, Menu, X } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useCart } from "./CartProvider";
@@ -12,16 +11,18 @@ export default function Navbar() {
     const [menuOpen, setMenuOpen] = useState(false);
     const router = useRouter();
 
-    const handleSearch = (e: React.FormEvent) => {
+    const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        if (!search.trim()) {
+        const searchValue = search.trim();
+
+        if (!searchValue) {
             router.push("/shop");
             setMenuOpen(false);
             return;
         }
 
-        router.push(`/shop?search=${encodeURIComponent(search.trim())}`);
+        router.push(`/shop?search=${encodeURIComponent(searchValue)}`);
         setMenuOpen(false);
     };
 
@@ -31,6 +32,7 @@ export default function Navbar() {
                 <div className="flex items-center justify-between gap-4">
                     <Link
                         href="/"
+                        onClick={() => setMenuOpen(false)}
                         className="text-xl md:text-3xl font-extrabold tracking-tight whitespace-nowrap"
                     >
                         <span className="text-pink-600">Lydia’s</span>{" "}
@@ -51,9 +53,10 @@ export default function Navbar() {
 
                         <button
                             type="submit"
-                            className="absolute right-2 top-1/2 -translate-y-1/2 bg-black hover:bg-pink-600 text-white p-2 rounded-full transition"
+                            className="absolute right-2 top-1/2 -translate-y-1/2 bg-black hover:bg-pink-600 text-white w-9 h-9 rounded-full transition flex items-center justify-center"
+                            aria-label="Search"
                         >
-                            <Search size={18} />
+                            🔍
                         </button>
                     </form>
 
@@ -61,12 +64,15 @@ export default function Navbar() {
                         <Link href="/" className="hover:text-pink-600 transition">
                             Home
                         </Link>
+
                         <Link href="/shop" className="hover:text-pink-600 transition">
                             Shop
                         </Link>
+
                         <Link href="/about" className="hover:text-pink-600 transition">
                             About
                         </Link>
+
                         <Link href="/contact" className="hover:text-pink-600 transition">
                             Contact
                         </Link>
@@ -75,6 +81,7 @@ export default function Navbar() {
                     <div className="flex items-center gap-2">
                         <Link
                             href="/cart"
+                            onClick={() => setMenuOpen(false)}
                             className="bg-black hover:bg-pink-600 text-white px-4 md:px-5 py-2.5 rounded-full text-sm font-semibold transition whitespace-nowrap"
                         >
                             Cart ({cartCount})
@@ -83,9 +90,10 @@ export default function Navbar() {
                         <button
                             type="button"
                             onClick={() => setMenuOpen(!menuOpen)}
-                            className="lg:hidden border border-gray-200 p-2 rounded-full"
+                            className="lg:hidden border border-gray-200 w-10 h-10 rounded-full flex items-center justify-center"
+                            aria-label="Toggle menu"
                         >
-                            {menuOpen ? <X size={20} /> : <Menu size={20} />}
+                            {menuOpen ? "✕" : "☰"}
                         </button>
                     </div>
                 </div>
@@ -101,9 +109,10 @@ export default function Navbar() {
 
                     <button
                         type="submit"
-                        className="absolute right-2 top-1/2 -translate-y-1/2 bg-black text-white p-2 rounded-full"
+                        className="absolute right-2 top-1/2 -translate-y-1/2 bg-black text-white w-9 h-9 rounded-full flex items-center justify-center"
+                        aria-label="Search"
                     >
-                        <Search size={18} />
+                        🔍
                     </button>
                 </form>
 
