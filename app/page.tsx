@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import Link from "next/link";
 import ProductCard from "@/components/ProductCard";
 import { supabase } from "@/lib/supabaseClient";
@@ -26,12 +28,30 @@ export default async function Home() {
     },
   ];
 
+  // ✅ FIXED: fetch products WITH variants
   const { data } = await supabase
     .from("products")
-    .select("*")
+    .select(`
+      id,
+      name,
+      price,
+      category,
+      image_url,
+      sizes,
+      colors,
+      product_variants (
+        id,
+        product_id,
+        color,
+        size,
+        stock_quantity,
+        image_url
+      )
+    `)
     .order("created_at", { ascending: false })
     .limit(4);
 
+  // ✅ FIXED: include product_variants
   const featuredProducts =
     data?.map((product) => ({
       id: product.id,
@@ -41,6 +61,7 @@ export default async function Home() {
       category: product.category,
       sizes: product.sizes || undefined,
       colors: product.colors || [],
+      product_variants: product.product_variants || [],
     })) || [];
 
   return (
@@ -81,7 +102,9 @@ export default async function Home() {
 
             <div className="absolute bottom-5 left-5 bg-white rounded-2xl shadow-md border border-pink-100 px-5 py-4">
               <p className="font-bold text-black">New Arrivals Available</p>
-              <p className="text-gray-500 text-sm">Shop the latest collection</p>
+              <p className="text-gray-500 text-sm">
+                Shop the latest collection
+              </p>
             </div>
           </div>
         </div>
@@ -147,7 +170,9 @@ export default async function Home() {
               </div>
 
               <div className="p-5">
-                <h3 className="text-xl font-bold mb-2">{category.name}</h3>
+                <h3 className="text-xl font-bold mb-2">
+                  {category.name}
+                </h3>
                 <p className="text-gray-500 text-sm leading-6">
                   {category.description}
                 </p>
@@ -161,7 +186,9 @@ export default async function Home() {
       <section className="px-6 md:px-16 py-10">
         <div className="flex items-end justify-between mb-10">
           <div>
-            <p className="text-pink-600 font-semibold mb-2">Featured</p>
+            <p className="text-pink-600 font-semibold mb-2">
+              Featured
+            </p>
             <h2 className="text-3xl md:text-5xl font-extrabold">
               Popular products
             </h2>
@@ -202,8 +229,8 @@ export default async function Home() {
               </h2>
 
               <p className="text-gray-300 leading-8 mb-8">
-                Browse our newest arrivals in clothing, shoes, handbags, and
-                jewelry.
+                Browse our newest arrivals in clothing, shoes,
+                handbags, and jewelry.
               </p>
 
               <Link

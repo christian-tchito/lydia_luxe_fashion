@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import Link from "next/link";
 import ProductCard from "@/components/ProductCard";
 import { supabase } from "@/lib/supabaseClient";
@@ -11,11 +13,29 @@ type ShopPageProps = {
 export default async function ShopPage({ searchParams }: ShopPageProps) {
     const searchTerm = searchParams.search?.toLowerCase() || "";
 
+    // ✅ FIX: include product_variants
     const { data, error } = await supabase
         .from("products")
-        .select("*")
+        .select(`
+            id,
+            name,
+            price,
+            category,
+            image_url,
+            sizes,
+            colors,
+            product_variants (
+                id,
+                product_id,
+                color,
+                size,
+                stock_quantity,
+                image_url
+            )
+        `)
         .order("created_at", { ascending: false });
 
+    // ✅ FIX: include variants in mapping
     const products =
         data?.map((product) => ({
             id: product.id,
@@ -25,6 +45,7 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
             category: product.category,
             sizes: product.sizes || undefined,
             colors: product.colors || [],
+            product_variants: product.product_variants || [],
         })) || [];
 
     const filteredProducts = products.filter((product) => {
