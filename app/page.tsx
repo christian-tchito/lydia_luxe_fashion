@@ -9,26 +9,25 @@ export default async function Home() {
     {
       name: "Clothes",
       image: "/images/dress.jpg",
-      description: "Dresses, outfits, and everyday fashion",
+      description: "Dresses & outfits",
     },
     {
       name: "Shoes",
       image: "/images/shoes.jpg",
-      description: "Heels, sandals, and stylish footwear",
+      description: "Heels & sandals",
     },
     {
       name: "Bags",
       image: "/images/bag.jpg",
-      description: "Handbags and fashion accessories",
+      description: "Handbags",
     },
     {
       name: "Jewelry",
       image: "/images/jewelry.jpg",
-      description: "Earrings, necklaces, and jewelry sets",
+      description: "Jewelry sets",
     },
   ];
 
-  // ✅ FIXED: fetch products WITH variants
   const { data } = await supabase
     .from("products")
     .select(`
@@ -49,9 +48,8 @@ export default async function Home() {
       )
     `)
     .order("created_at", { ascending: false })
-    .limit(4);
+    .limit(8);
 
-  // ✅ FIXED: include product_variants
   const featuredProducts =
     data?.map((product) => ({
       id: product.id,
@@ -67,32 +65,32 @@ export default async function Home() {
   return (
     <main className="min-h-screen bg-white text-gray-900">
       {/* HERO */}
-      <section className="px-6 md:px-16 py-10 md:py-16">
-        <div className="grid lg:grid-cols-2 gap-10 items-center">
+      <section className="px-5 md:px-16 py-6 md:py-12">
+        <div className="grid lg:grid-cols-2 gap-8 items-center">
           <div>
-            <p className="inline-block bg-pink-50 text-pink-600 px-4 py-2 rounded-full text-sm font-semibold mb-5">
+            <p className="inline-block bg-pink-50 text-pink-600 px-4 py-2 rounded-full text-sm font-semibold mb-4">
               Modern Boutique Fashion
             </p>
 
-            <h1 className="text-4xl md:text-6xl font-extrabold leading-tight mb-6">
+            <h1 className="text-3xl md:text-6xl font-extrabold leading-tight mb-4">
               Fashion designed for confidence and elegance.
             </h1>
 
-            <p className="text-gray-600 text-base md:text-lg leading-8 max-w-xl mb-8">
+            <p className="text-gray-600 text-sm md:text-lg leading-7 max-w-xl mb-6">
               Discover stylish clothing, shoes, bags, and jewelry carefully
               selected for women who love a clean, classy, and modern look.
             </p>
 
             <Link
               href="/shop"
-              className="inline-block bg-black hover:bg-pink-600 text-white px-7 py-3.5 rounded-full font-semibold transition"
+              className="inline-block bg-black hover:bg-pink-600 text-white px-6 py-3 rounded-full font-semibold transition"
             >
               Shop Collection
             </Link>
           </div>
 
           <div className="relative">
-            <div className="h-[350px] md:h-[520px] rounded-[2rem] overflow-hidden border border-pink-100">
+            <div className="h-[260px] md:h-[500px] rounded-[1.5rem] md:rounded-[2rem] overflow-hidden border border-pink-100">
               <img
                 src="/images/banner.jpg"
                 alt="Lydia’s Luxe Fashion Banner"
@@ -100,7 +98,7 @@ export default async function Home() {
               />
             </div>
 
-            <div className="absolute bottom-5 left-5 bg-white rounded-2xl shadow-md border border-pink-100 px-5 py-4">
+            <div className="hidden md:block absolute bottom-5 left-5 bg-white rounded-2xl shadow-md border border-pink-100 px-5 py-4">
               <p className="font-bold text-black">New Arrivals Available</p>
               <p className="text-gray-500 text-sm">
                 Shop the latest collection
@@ -110,38 +108,12 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* TRUST SECTION */}
-      <section className="px-6 md:px-16 pb-10">
-        <div className="grid md:grid-cols-3 gap-5">
-          <div className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm">
-            <h3 className="font-bold text-xl mb-3">Curated Fashion</h3>
-            <p className="text-gray-500 leading-7">
-              Boutique pieces selected for modern women.
-            </p>
-          </div>
-
-          <div className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm">
-            <h3 className="font-bold text-xl mb-3">Easy Checkout</h3>
-            <p className="text-gray-500 leading-7">
-              Add items to cart and checkout quickly.
-            </p>
-          </div>
-
-          <div className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm">
-            <h3 className="font-bold text-xl mb-3">Customer Support</h3>
-            <p className="text-gray-500 leading-7">
-              Contact us through the Navbar for sizing or order help.
-            </p>
-          </div>
-        </div>
-      </section>
-
       {/* CATEGORIES */}
-      <section className="px-6 md:px-16 py-14">
-        <div className="flex items-end justify-between mb-10">
+      <section className="px-5 md:px-16 py-5">
+        <div className="flex items-end justify-between mb-5">
           <div>
-            <p className="text-pink-600 font-semibold mb-2">Categories</p>
-            <h2 className="text-3xl md:text-5xl font-extrabold">
+            <p className="text-pink-600 font-semibold mb-1">Categories</p>
+            <h2 className="text-2xl md:text-4xl font-extrabold">
               Shop by style
             </h2>
           </div>
@@ -154,14 +126,14 @@ export default async function Home() {
           </Link>
         </div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
           {categories.map((category) => (
             <Link
               href={`/shop?search=${category.name.toLowerCase()}`}
               key={category.name}
               className="bg-white border border-gray-100 rounded-2xl overflow-hidden hover:shadow-md transition"
             >
-              <div className="h-40 overflow-hidden">
+              <div className="h-24 md:h-32 overflow-hidden">
                 <img
                   src={category.image}
                   alt={category.name}
@@ -169,11 +141,11 @@ export default async function Home() {
                 />
               </div>
 
-              <div className="p-5">
-                <h3 className="text-xl font-bold mb-2">
+              <div className="p-3 md:p-4">
+                <h3 className="text-base md:text-lg font-bold mb-1">
                   {category.name}
                 </h3>
-                <p className="text-gray-500 text-sm leading-6">
+                <p className="text-gray-500 text-xs md:text-sm">
                   {category.description}
                 </p>
               </div>
@@ -183,12 +155,10 @@ export default async function Home() {
       </section>
 
       {/* FEATURED PRODUCTS */}
-      <section className="px-6 md:px-16 py-10">
-        <div className="flex items-end justify-between mb-10">
+      <section className="px-5 md:px-16 py-6">
+        <div className="flex items-end justify-between mb-6">
           <div>
-            <p className="text-pink-600 font-semibold mb-2">
-              Featured
-            </p>
+            <p className="text-pink-600 font-semibold mb-1">Featured</p>
             <h2 className="text-3xl md:text-5xl font-extrabold">
               Popular products
             </h2>
@@ -207,7 +177,7 @@ export default async function Home() {
             No products yet. Add products from the admin page.
           </div>
         ) : (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
             {featuredProducts.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
@@ -216,21 +186,21 @@ export default async function Home() {
       </section>
 
       {/* PROMO */}
-      <section className="px-6 md:px-16 py-16">
+      <section className="px-5 md:px-16 py-10">
         <div className="bg-black rounded-[2rem] overflow-hidden">
           <div className="grid lg:grid-cols-2 items-center">
-            <div className="p-8 md:p-14 text-white">
+            <div className="p-7 md:p-14 text-white">
               <p className="text-pink-300 font-semibold mb-3">
                 New Collection
               </p>
 
-              <h2 className="text-3xl md:text-5xl font-extrabold leading-tight mb-6">
+              <h2 className="text-3xl md:text-5xl font-extrabold leading-tight mb-5">
                 Timeless pieces for every occasion.
               </h2>
 
-              <p className="text-gray-300 leading-8 mb-8">
-                Browse our newest arrivals in clothing, shoes,
-                handbags, and jewelry.
+              <p className="text-gray-300 leading-7 mb-7">
+                Browse our newest arrivals in clothing, shoes, handbags, and
+                jewelry.
               </p>
 
               <Link
@@ -241,7 +211,7 @@ export default async function Home() {
               </Link>
             </div>
 
-            <div className="h-[320px] md:h-full overflow-hidden">
+            <div className="h-[240px] md:h-full overflow-hidden">
               <img
                 src="/images/promo.jpg"
                 alt="Fashion Promo"

@@ -35,21 +35,31 @@ export default function ProductCard({ product }: ProductProps) {
     const requiresSize =
         product.category === "Clothes" || product.category === "Shoes";
 
+    const allSizes =
+        product.sizes
+            ?.flatMap((size) => size.split(",").map((s) => s.trim()))
+            .filter(Boolean) || [];
+
     const selectedVariant = product.product_variants?.find((variant) => {
         const colorMatches = variant.color === selectedColor;
+
+        const variantSizes =
+            variant.size
+                ?.split(",")
+                .map((s) => s.trim())
+                .filter(Boolean) || [];
+
         const sizeMatches = requiresSize
-            ? variant.size === selectedSize
+            ? variantSizes.includes(selectedSize)
             : true;
 
         return colorMatches && sizeMatches;
     });
 
-    const displayImage =
-        selectedVariant?.image_url || product.image || "";
+    const displayImage = selectedVariant?.image_url || product.image || "";
 
     const isOutOfStock =
-        selectedVariant !== undefined &&
-        selectedVariant.stock_quantity <= 0;
+        selectedVariant !== undefined && selectedVariant.stock_quantity <= 0;
 
     const handleAddToCart = () => {
         if (requiresSize && !selectedSize) {
@@ -84,8 +94,8 @@ export default function ProductCard({ product }: ProductProps) {
     };
 
     return (
-        <div className="bg-white rounded-2xl overflow-hidden border border-pink-100 shadow-sm hover:shadow-lg transition">
-            <div className="h-64 bg-[#faf7f8] overflow-hidden">
+        <div className="bg-white rounded-2xl overflow-hidden border border-pink-100 shadow-sm hover:shadow-md transition">
+            <div className="h-40 sm:h-48 md:h-52 bg-[#faf7f8] overflow-hidden">
                 {displayImage ? (
                     <img
                         src={displayImage}
@@ -99,21 +109,23 @@ export default function ProductCard({ product }: ProductProps) {
                 )}
             </div>
 
-            <div className="p-5">
-                <p className="text-pink-600 text-xs font-semibold uppercase tracking-wide mb-2">
+            <div className="p-4">
+                <p className="text-pink-600 text-[11px] font-bold uppercase tracking-wide mb-1">
                     {product.category}
                 </p>
 
-                <h3 className="text-lg font-bold mb-2">{product.name}</h3>
+                <h3 className="text-base font-bold mb-1 line-clamp-1">
+                    {product.name}
+                </h3>
 
-                <p className="font-bold text-xl mb-4">${product.price}</p>
+                <p className="font-bold text-lg mb-3">${product.price}</p>
 
-                {requiresSize && product.sizes && product.sizes.length > 0 && (
-                    <div className="mb-4">
-                        <p className="font-semibold text-sm mb-2">Size</p>
+                {requiresSize && allSizes.length > 0 && (
+                    <div className="mb-3">
+                        <p className="font-semibold text-xs mb-1">Size</p>
 
-                        <div className="flex flex-wrap gap-2">
-                            {product.sizes.map((size) => (
+                        <div className="flex flex-wrap gap-1.5">
+                            {allSizes.map((size) => (
                                 <button
                                     key={size}
                                     type="button"
@@ -121,7 +133,7 @@ export default function ProductCard({ product }: ProductProps) {
                                         setSelectedSize(size);
                                         setError("");
                                     }}
-                                    className={`px-3 py-2 rounded-full border text-xs font-semibold transition ${selectedSize === size
+                                    className={`px-2.5 py-1.5 rounded-full border text-[11px] font-semibold transition ${selectedSize === size
                                             ? "bg-black text-white border-black"
                                             : "bg-white text-gray-700 border-gray-200 hover:border-pink-500"
                                         }`}
@@ -133,10 +145,10 @@ export default function ProductCard({ product }: ProductProps) {
                     </div>
                 )}
 
-                <div className="mb-4">
-                    <p className="font-semibold text-sm mb-2">Color</p>
+                <div className="mb-3">
+                    <p className="font-semibold text-xs mb-1">Color</p>
 
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-wrap gap-1.5">
                         {product.colors.map((color) => (
                             <button
                                 key={color}
@@ -145,7 +157,7 @@ export default function ProductCard({ product }: ProductProps) {
                                     setSelectedColor(color);
                                     setError("");
                                 }}
-                                className={`px-3 py-2 rounded-full border text-xs font-semibold transition ${selectedColor === color
+                                className={`px-2.5 py-1.5 rounded-full border text-[11px] font-semibold transition ${selectedColor === color
                                         ? "bg-pink-600 text-white border-pink-600"
                                         : "bg-white text-gray-700 border-gray-200 hover:border-pink-500"
                                     }`}
@@ -158,7 +170,7 @@ export default function ProductCard({ product }: ProductProps) {
 
                 {selectedVariant && (
                     <p
-                        className={`text-sm font-semibold mb-3 ${isOutOfStock ? "text-red-500" : "text-green-600"
+                        className={`text-xs font-semibold mb-2 ${isOutOfStock ? "text-red-500" : "text-green-600"
                             }`}
                     >
                         {isOutOfStock
@@ -168,15 +180,15 @@ export default function ProductCard({ product }: ProductProps) {
                 )}
 
                 {error && (
-                    <p className="text-red-500 text-sm font-semibold mb-3">
+                    <p className="text-red-500 text-xs font-semibold mb-2">
                         {error}
                     </p>
                 )}
 
                 <button
                     onClick={handleAddToCart}
-                    disabled={isOutOfStock}
-                    className={`w-full py-3 rounded-full font-semibold transition ${isOutOfStock
+                    disabled={!!isOutOfStock}
+                    className={`w-full py-2.5 rounded-full text-sm font-semibold transition ${isOutOfStock
                             ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                             : "bg-black hover:bg-pink-600 text-white"
                         }`}
